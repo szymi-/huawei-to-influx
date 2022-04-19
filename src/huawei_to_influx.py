@@ -54,20 +54,6 @@ class HuaweiToInflux:
         self.influx.write_points(point)
 
 
-
-def get_huawei_solar_data():
-    while True:
-        for key in settings.KEYS:
-            result = huawei.get(key)
-            if type(result.value) == datetime:
-                value = result.value.isoformat()
-            else:
-                value = result.value
-            point = get_point(key, value)
-            client.write_points(point)
-            print("{} ({})".format(point, result.unit))
-
-
 if __name__ == "__main__":
     huawei_to_influx = HuaweiToInflux()
     huawei_to_influx.get_huawei_solar_data()
