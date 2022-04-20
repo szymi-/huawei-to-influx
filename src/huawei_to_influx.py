@@ -39,6 +39,9 @@ class HuaweiToInflux:
         self.get_huawei_solar_data()
 
 
+    def run(self):
+        pass
+
     def write_point(self, key, value):
         point = [
             {
