@@ -19,7 +19,7 @@ Log in to Grafana (it should be available at http://localhost:3000) and configur
 
 TODO
 
-# How to prepare your inverter to serve data via modbus
+# How to prepare inverter to serve data via modbus
 
 TODO
 
