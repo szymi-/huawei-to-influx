@@ -4,15 +4,13 @@ services:
   influx:
     image: influxdb:1.8
     container_name: huawei_influx
-    ports:
-      - 8087:8086
     restart: unless-stopped
     volumes:
       - ./influx_lib:/var/lib/influxdb
   grafana:
     image: grafana/grafana-oss:8.4.7
     ports:
-      - 4000:3000
+      - 3000:3000
     container_name: huawei_grafana
     restart: unless-stopped
     volumes:
