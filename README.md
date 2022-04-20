@@ -17,7 +17,7 @@ Log in to Grafana (it should be available at http://localhost:3000) and configur
 
 # Add dashboard and panels
 
-You can use the dashboard from `sample_dashboards` dir as a starting point.
+You can use the dashboard from `sample_dashboards/` dir as a starting point.
 
 # Adding more metrics
 
