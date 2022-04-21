@@ -9,7 +9,7 @@ Install make, docker and docker-compose. To run for the first time:
     export HUAWEI_ADDRESS=<inverter_ip_address>
     make first run
     
-This will build docker image, fetch Influx and Grafana imaages and run everything. 
+This will build docker image, fetch Influx and Grafana images and run everything. 
 
 # Configure Grafana
 
