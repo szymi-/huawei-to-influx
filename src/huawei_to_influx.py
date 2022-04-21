@@ -1,9 +1,13 @@
-from huawei_solar import HuaweiSolar
+from huawei_solar import ConnectionException, HuaweiSolar
 from datetime import datetime
 from influxdb import InfluxDBClient
 
 import settings
 import time
+
+
+class OffGrid(Exception):
+    pass
 
 
 class HuaweiToInflux:
@@ -22,8 +26,7 @@ class HuaweiToInflux:
             device_status = self.huawei.get('device_status')
             self.write_point('device_status', device_status.value)
             if device_status.value != 'On-grid':
-                print("Waiting for \"On-grid\" status...")
-                break
+                raise OffGrid
             for key in settings.KEYS:
                 if key == 'device_status':
                     continue
@@ -34,13 +37,16 @@ class HuaweiToInflux:
                     value = result.value
                 point = self.write_point(key, value)
 
-        print("Sleeping 30 seconds...")
-        time.sleep(30)
-        self.get_huawei_solar_data()
 
 
     def run(self):
-        pass
+        try:
+            self.get_huawei_solar_data()
+        except (OffGrid, ConnectionException) as e:
+            print("Waiting... ({})".format(e))
+            time.sleep(30)
+            self.get_huawei_solar_data()
+
 
     def write_point(self, key, value):
         point = [
@@ -59,4 +65,4 @@ class HuaweiToInflux:
 
 if __name__ == "__main__":
     huawei_to_influx = HuaweiToInflux()
-    huawei_to_influx.get_huawei_solar_data()
+    huawei_to_influx.run()
