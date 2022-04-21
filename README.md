@@ -1,6 +1,6 @@
 # huawei-to-influx
 
-Tool to collect data from Huawei inverter and save it in Influxdb to display in Grafana. I used to have a Fronius inverter and kept Fronius related scripts in [this repo](https://github.com/szymi-/fronius-to-influx). Since I changed my inverter to Huawei after adding some new solar panels, I had to create a new script for collecting Huawei data. I rely on [this library](https://gitlab.com/Emilv2/huawei-solar/).
+Tool to collect data from Huawei inverter and save it in Influxdb to display in Grafana. I used to have a Fronius inverter and kept Fronius related scripts in [this repo](https://github.com/szymi-/fronius-to-influx). Since I changed my inverter to Huawei after adding some new solar panels, I had to create a new script for collecting Huawei data. It relies on [this library](https://gitlab.com/Emilv2/huawei-solar/).
 
 # How to start
 
