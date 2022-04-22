@@ -1,5 +1,28 @@
 import os
 
+LOGGING = {
+    "version": 1,
+    "formatters": {
+        "standard": {
+            "format": "%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(message)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "WARNING",
+            "formatter": "standard",
+            "stream": "ext://sys.stdout",
+        }
+    },
+    'loggers': {
+        '': {  # root logger
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': True
+        },
+    }
+}
 
 HUAWEI_ADDRESS = os.environ.get('HUAWEI_ADDRESS')
 HUAWEI_SLAVE = int(os.environ.get('HUAWEI_SLAVE'))

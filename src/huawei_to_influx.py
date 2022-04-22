@@ -1,9 +1,21 @@
-from huawei_solar import ConnectionException, HuaweiSolar
+from huawei_solar import HuaweiSolar
 from datetime import datetime
 from influxdb import InfluxDBClient
+from tenacity import (
+    after_log,
+    before_log,
+    before_sleep_log,
+    retry,
+    wait_fixed,
+)
 
 import settings
 import time
+import logging.config
+
+
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger(__name__)
 
 
 class OffGrid(Exception):
@@ -19,12 +31,11 @@ class HuaweiToInflux:
         )
         self.influx.switch_database(settings.INFLUX_DATABASE)
 
-
-    def get_huawei_solar_data(self):
-        print("Starting to get solar data...")
+    def _get_huawei_solar_data(self):
+        logger.debug("Starting to get solar data...")
         while True:
             device_status = self.huawei.get('device_status')
-            self.write_point('device_status', device_status.value)
+            self._write_point('device_status', device_status.value)
             if device_status.value != 'On-grid':
                 raise OffGrid
             for key in settings.KEYS:
@@ -35,20 +46,9 @@ class HuaweiToInflux:
                     value = result.value.isoformat()
                 else:
                     value = result.value
-                point = self.write_point(key, value)
+                point = self._write_point(key, value)
 
-
-
-    def run(self):
-        try:
-            self.get_huawei_solar_data()
-        except (OffGrid, ConnectionException) as e:
-            print("Waiting... ({})".format(e))
-            time.sleep(30)
-            self.get_huawei_solar_data()
-
-
-    def write_point(self, key, value):
+    def _write_point(self, key, value):
         point = [
             {
                 "measurement": "huawei",
@@ -58,9 +58,18 @@ class HuaweiToInflux:
                 }
             }
         ]
-        print("Writing measurement:")
-        print(point)
+        logger.debug(("Writing measurement: {}").format(point))
         self.influx.write_points(point)
+
+    @retry(
+        wait=wait_fixed(30),
+        before=before_log(logger, logging.DEBUG),
+        before_sleep=before_sleep_log(logger, logging.WARNING),
+        after=after_log(logger, logging.DEBUG)
+    )
+    def run(self):
+        self._get_huawei_solar_data()
+
 
 
 if __name__ == "__main__":
